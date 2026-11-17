@@ -78,7 +78,9 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         LOG.error("找不到数据集配置 %s，请先运行：python scripts/prepare_dataset.py --voc-dir <你的数据目录>", data)
         return 2
 
-    # ---- 打印数据集版本：三台机器各自训练时，靠它判断数据是不是同一份 ----
+    # ---- 训练前校验数据集：记录里的指纹 vs 磁盘现状 ----
+    # 只读 DATASET_VERSION.txt 不够：有人改了数据但没跑 fingerprint 的话，
+    # 文件里记的还是旧指纹，等于没校验。这里现场扫一遍比对。
     ver_file = PROJECT_ROOT / "data" / "DATASET_VERSION.txt"
     if ver_file.exists():
         info = {}
@@ -91,7 +93,27 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             info.get("version", "?"), info.get("images", "?"),
             info.get("fingerprint", "?"), info.get("updated", "?"),
         )
-        LOG.info("（三台机器训练时请核对指纹一致，否则指标不可比）")
+        try:
+            sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
+            from dataset_fingerprint import collect  # noqa: E402
+
+            LOG.info("正在核对数据集现状（约 20 秒）…")
+            cur = collect(PROJECT_ROOT / "data" / "processed")
+            if cur and cur["fingerprint"] != info.get("fingerprint"):
+                LOG.warning("=" * 60)
+                LOG.warning("数据集与记录不一致！")
+                LOG.warning("  记录指纹 : %s", info.get("fingerprint"))
+                LOG.warning("  实际指纹 : %s", cur["fingerprint"])
+                LOG.warning("  实际图片 : %s 张", cur["images"])
+                LOG.warning("说明数据被改动过但没更新版本记录。建议先运行：")
+                LOG.warning("  python scripts/dataset_fingerprint.py")
+                LOG.warning("否则本次训练的指标无法与别人对比。")
+                LOG.warning("=" * 60)
+            elif cur:
+                LOG.info("数据核对通过：磁盘数据与版本记录一致 ✅")
+        except Exception as exc:  # noqa: BLE001
+            LOG.warning("数据核对跳过（%s）", exc)
+        LOG.info("（多台机器训练时请核对指纹一致，否则指标不可比）")
     else:
         LOG.warning("没有 data/DATASET_VERSION.txt，建议先跑：python scripts/dataset_fingerprint.py")
 
