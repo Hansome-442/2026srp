@@ -70,3 +70,6 @@ desktop.ini
 
 # ---- 数据集分卷打包产物 ----
 dist/
+
+# ---- 最小可用子集（由 make_subset.py 生成，体积大）----
+data/subset/

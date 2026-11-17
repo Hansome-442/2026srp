@@ -1,0 +1,15 @@
+# 最小可用子集（仅用于跑通流程，正式训练请用 data/dataset.yaml）
+path: data/subset
+train: images/train
+val: images/val
+test: images/test
+nc: 8
+names:
+- listening
+- reading
+- writing
+- hand_raising
+- standing
+- discussing
+- sleeping
+- using_phone
