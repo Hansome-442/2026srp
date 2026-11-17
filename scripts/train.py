@@ -11,6 +11,7 @@ python scripts/train.py --resume              # 断点续训（自动找最近�
 from __future__ import annotations
 
 import argparse
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -18,6 +19,11 @@ from typing import Any, Dict, Optional, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+
+# dataset.yaml 里的 path 写成相对路径（data/processed），ultralytics 是按
+# 「当前工作目录」去找的。这里统一切到项目根目录，保证不管从哪个目录执行
+# 训练都能找到数据，也让项目可以放在任意盘符（不必是作者机器上的 E:\）。
+os.chdir(PROJECT_ROOT)
 
 from src.utils import CONFIG_DIR, RUNS_DIR, get_logger, load_yaml, resolve_path  # noqa: E402
 

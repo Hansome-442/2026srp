@@ -9,6 +9,7 @@ python scripts/val.py --weights runs/best.pt --split test --imgsz 640
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 import time
 from pathlib import Path
@@ -16,6 +17,9 @@ from typing import Any, Dict, Optional, Sequence
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+
+# 与 train.py 一致：切到项目根，保证 dataset.yaml 里的相对 path 能找到数据
+os.chdir(PROJECT_ROOT)
 
 from src.utils import REPORTS_DIR, ensure_dir, get_logger, load_classes, load_yaml, resolve_path  # noqa: E402
 

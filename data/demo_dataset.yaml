@@ -1,4 +1,4 @@
-path: E:\2026srp\data\demo_processed
+path: data/demo_processed
 train: images/train
 val: images/val
 test: images/test
