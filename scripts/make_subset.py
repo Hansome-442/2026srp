@@ -155,8 +155,8 @@ def main() -> int:
         with zipfile.ZipFile(zp, "w", zipfile.ZIP_DEFLATED, compresslevel=6) as z:
             for f in out.rglob("*"):
                 if f.is_file():
-                    z.write(f, f.relative_to(ROOT.parent).as_posix())
-            z.write(yaml_path, yaml_path.relative_to(ROOT.parent).as_posix())
+                    z.write(f, f.relative_to(ROOT).as_posix())
+            z.write(yaml_path, yaml_path.relative_to(ROOT).as_posix())
         print(f"压缩包：{zp}  ({zp.stat().st_size / 1024 ** 2:.0f} MB)")
         print("解压到项目根目录即可（会生成 data/subset 与 data/subset.yaml）")
 
