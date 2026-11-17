@@ -1,0 +1,31 @@
+# =============================================================================
+#  【仅用于流程冒烟验证，不是课堂行为数据集配置】
+#  用途：在没有拿到课堂行为数据之前，用课程自带的 PASCAL VOC2007 数据（person 类）
+#        跑通「数据转换 -> 划分 -> 训练 -> 验证 -> 系统推理」整条链路。
+#  用法：
+#    python scripts/prepare_dataset.py --voc-dir E:/yolov11/VOCdevkit/VOC2007 ^
+#        --classes configs/classes_demo_person.yaml --out data/demo_processed ^
+#        --dataset-yaml data/demo_dataset.yaml --max-samples 400
+#  正式训练请使用 configs/classes.yaml（8 类课堂行为）。
+# =============================================================================
+
+dataset:
+  name: demo-person-pipeline-check
+  version: "0.1"
+  target_samples: 400
+  scenes: [冒烟验证]
+  stages: [冒烟验证]
+
+classes:
+  - id: 0
+    en: person
+    zh: person
+    kind: normal
+    color: [0, 200, 0]
+    desc: PASCAL VOC 的 person 类，仅用于验证工程链路
+
+aliases:
+  人: person
+  学生: person
+
+anomaly_rules: []

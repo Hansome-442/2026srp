@@ -1,0 +1,63 @@
+# =============================================================================
+#  YOLOv11 训练配置 v6：并入用户新增的 4,065 张大学阶梯教室数据后继续训练
+#  数据变化（v5 -> v6）：
+#    · 新增 hand-raising / reading / writing / upright 四类（人体级框，已核粒度）
+#    · 屏蔽 Using_phone / phone / book（物体级框，会把"手机"当"玩手机"学坏）
+#    · 屏蔽 bow_head / raise_head / sleep（头部级框，与我们的单人整身框口径不一致）
+#  训练策略：从 v5 权重暖启动，40 轮，lr0 0.008
+# =============================================================================
+
+data: data/dataset.yaml
+
+model: runs/best.pt
+
+epochs: 40
+imgsz: 640
+batch: 12
+device: 0
+workers: 4
+patience: 15
+optimizer: SGD
+lr0: 0.008
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 1.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.05
+cos_lr: true
+dropout: 0.0
+
+box: 7.5
+cls: 0.5
+dfl: 1.5
+cls_pw: 0.35
+
+mosaic: 0.8
+close_mosaic: 10
+mixup: 0.05
+copy_paste: 0.0
+degrees: 5.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+erasing: 0.4
+multi_scale: 0.25
+
+amp: true
+cache: false
+rect: false
+val: true
+plots: true
+save_period: -1
+seed: 0
+deterministic: false
+
+project: runs/train
+name: classroom_v6_40ep

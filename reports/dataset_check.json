@@ -1,0 +1,79 @@
+{
+  "generated_at": "2026-10-16 21:20:47",
+  "data_yaml": "E:\\2026srp\\data\\demo_dataset.yaml",
+  "num_classes": 1,
+  "splits": {
+    "train": {
+      "images": 386,
+      "boxes": 994,
+      "avg_boxes_per_image": 2.58,
+      "missing_labels": 0,
+      "instances_per_class": {
+        "0": 994
+      },
+      "images_per_class": {
+        "0": 386
+      },
+      "top_sizes": {
+        "500x375": 162,
+        "500x333": 50,
+        "375x500": 27,
+        "500x332": 18,
+        "333x500": 18,
+        "500x374": 6,
+        "500x334": 6,
+        "334x500": 4,
+        "332x500": 4,
+        "500x331": 3
+      }
+    },
+    "val": {
+      "images": 125,
+      "boxes": 346,
+      "avg_boxes_per_image": 2.77,
+      "missing_labels": 0,
+      "instances_per_class": {
+        "0": 346
+      },
+      "images_per_class": {
+        "0": 125
+      },
+      "top_sizes": {
+        "500x375": 52,
+        "500x333": 19,
+        "375x500": 8,
+        "500x334": 5,
+        "333x500": 4,
+        "500x332": 3,
+        "500x400": 2,
+        "332x500": 2,
+        "500x357": 2,
+        "353x500": 1
+      }
+    },
+    "test": {
+      "images": 67,
+      "boxes": 158,
+      "avg_boxes_per_image": 2.36,
+      "missing_labels": 0,
+      "instances_per_class": {
+        "0": 158
+      },
+      "images_per_class": {
+        "0": 67
+      },
+      "top_sizes": {
+        "500x375": 19,
+        "500x333": 13,
+        "375x500": 7,
+        "500x332": 4,
+        "318x480": 3,
+        "333x500": 2,
+        "500x334": 2,
+        "332x500": 2,
+        "500x500": 2,
+        "374x500": 1
+      }
+    }
+  }
+}

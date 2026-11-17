@@ -1,0 +1,58 @@
+# =============================================================================
+#  课堂行为检测系统运行配置（桌面端 app/desktop_app.py 与网页端 app/web_app.py 共用）
+# =============================================================================
+
+model:
+  # 训练完成后的权重；train.py 每次训练结束都会复制一份到 runs/best.pt，
+  # 因此这里固定写 runs/best.pt，重训后重新打开界面即自动用上新模型
+  weights: runs/best.pt
+  fallback_weights: yolo11n.pt     # 上面权重不存在时自动回退
+  device: 0                        # 0=GPU，cpu=CPU
+  imgsz: 640
+  conf: 0.20                       # 全局默认阈值（界面可调；单张图片/演示建议 0.15~0.20）
+  # 按类阈值：强类压误检，弱类保召回；数值别太高，否则演示时框会很少
+  per_class_conf:
+    抬头听讲: 0.30
+    阅读看书: 0.35
+    书写记笔记: 0.35
+    举手发言: 0.25
+    站立回答: 0.25
+    小组讨论: 0.35
+    趴桌睡觉: 0.20
+    玩手机: 0.20
+  iou: 0.60                        # NMS IoU：密集遮挡场景 0.5→0.6 可减少框被误合并
+  half: false                      # GPU 上可开 true 提速（部分显卡可能报错）
+  max_det: 500                     # 一个班 50+ 人，上限给足
+
+tracking:
+  enable: true                     # 视频/摄像头模式下启用跟踪，用于行为时长统计
+  tracker: bytetrack.yaml          # 可选 botsort.yaml
+  max_age: 30                      # 目标丢失多少帧后结束该学生轨迹（simple tracker 用）
+
+analysis:
+  fps_assume: 25                   # 视频流假设帧率（无真实帧率时用于时长换算）
+  # 专注/参与率 = 在参与课堂的行为（含低头阅读、书写）
+  attention_classes: [抬头听讲, 阅读看书, 书写记笔记, 举手发言, 站立回答]
+  # 抬头率 = 只算真正抬头的姿态；阅读/书写是低头行为，不计入
+  head_up_classes: [抬头听讲, 举手发言, 站立回答]
+  anomaly_classes: [趴桌睡觉, 玩手机]
+  window_seconds: 60               # 统计窗口：最近 N 秒的行为分布
+  alert_cooldown: 10               # 同一学生同一行为的告警冷却时间（秒）
+  sleeping_seconds: 8              # 趴桌超过多少秒判定为睡觉
+  phone_seconds: 5                 # 玩手机超过多少秒判定为异常
+
+camera:
+  index: 0
+  width: 1280
+  height: 720
+  target_fps: 15                   # 界面刷新上限
+
+report:
+  output_dir: reports
+  excel: true                      # 是否导出 xlsx（需要 openpyxl）
+  save_annotated: true             # 是否保存标注后的图片/视频
+
+ui:
+  window_title: 课堂行为检测系统（YOLOv11）
+  show_fps: true
+  max_alert_rows: 200

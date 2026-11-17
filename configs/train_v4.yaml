@@ -1,0 +1,65 @@
+# =============================================================================
+#  YOLOv11 训练配置 v4（在 v3 基础上补充 SCB5 Talk/Stand 数据）
+#  v3 结论：mAP50 0.671 / mAP50-95 0.462，未过拟合，第 83 轮早停
+#  v4 变化：
+#   · 数据：新增 SCB5-Talk(4539) + SCB5-Talk-Teacher-Behavior(8920，仅取 talk) + SCB5-Stand(7602)
+#           总量约 3.6 万张（去重后），重点补「小组讨论」「站立回答」
+#   · epochs 100 -> 80（v3 显示 80 轮内即收敛，数据变多后单轮更久，控制总时长）
+#   · patience 30 -> 25（更早止损）
+#   · 其余参数与 v3 一致（SGD / cls_pw 0.35 / mosaic 0.8 / multi_scale 0.25）
+# =============================================================================
+
+data: data/dataset.yaml
+
+model: yolo11s.pt
+
+epochs: 50
+imgsz: 640
+batch: 12
+device: 0
+workers: 4
+patience: 20
+optimizer: SGD
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cos_lr: true
+dropout: 0.0
+
+box: 7.5
+cls: 0.5
+dfl: 1.5
+cls_pw: 0.35
+
+mosaic: 0.8
+close_mosaic: 15
+mixup: 0.05
+copy_paste: 0.0
+degrees: 5.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+erasing: 0.4
+multi_scale: 0.25
+
+amp: true
+cache: false
+rect: false
+val: true
+plots: true
+save_period: -1
+seed: 0
+deterministic: false
+
+project: runs/train
+name: classroom_v4_80ep

@@ -1,0 +1,14 @@
+path: E:\2026srp\data\processed
+train: images/train
+val: images/val
+test: images/test
+nc: 8
+names:
+- listening
+- reading
+- writing
+- hand_raising
+- standing
+- discussing
+- sleeping
+- using_phone

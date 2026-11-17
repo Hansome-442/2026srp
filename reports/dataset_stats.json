@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-11-15 16:02:11",
+  "source": "data\\raw\\downloads\\student_classroom_behavior + data\\raw\\downloads\\yolov9_classroom + data\\raw\\downloads\\scb3_phone_sleep\\5k_HRW_yolo_Dataset_jpg\\5k_HRW_yolo_Dataset_jpg + data\\raw\\downloads\\scb3_phone_sleep\\0.671k_university_yolo_Dataset\\0.671k_university_yolo_Dataset + data\\raw\\downloads\\hf_scb\\extracted\\SCB5-Discuss-2024-9-17 + data\\raw\\downloads\\hf_scb\\extracted\\SCB5-Handrise-Read-write-2024-9-17 + data\\raw\\downloads\\scb05\\SCB-Dataset\\SCB5-Talk-2024-9-17 + data\\raw\\downloads\\scb05\\SCB-Dataset\\SCB5-Talk-Teacher-Behavior-2024-9-17 + data\\raw\\downloads\\scb05\\SCB-Dataset\\SCB5-Stand-2024-9-17 + data\\raw\\downloads\\scb4065",
+  "num_classes": 8,
+  "target_samples": 5000,
+  "splits": {
+    "train": {
+      "split": "train",
+      "images": 34603,
+      "boxes": 386526,
+      "instances_per_class": {
+        "站立回答": 14566,
+        "小组讨论": 15768,
+        "书写记笔记": 79969,
+        "抬头听讲": 149479,
+        "阅读看书": 93299,
+        "举手发言": 22978,
+        "玩手机": 8089,
+        "趴桌睡觉": 2378
+      },
+      "images_per_class": {
+        "站立回答": 9712,
+        "小组讨论": 7713,
+        "抬头听讲": 8439,
+        "书写记笔记": 6329,
+        "阅读看书": 11974,
+        "举手发言": 7219,
+        "趴桌睡觉": 952,
+        "玩手机": 1053
+      },
+      "unknown_labels": {
+        "teacher": 517,
+        "IGNORE_raisehead": 9920,
+        "IGNORE_phone": 4188,
+        "IGNORE_sleep": 1291,
+        "IGNORE_bowhead": 34938,
+        "IGNORE_using_phone": 12170,
+        "IGNORE_book": 16367,
+        "IGNORE_bend": 10994,
+        "Eating": 1643,
+        "blackboard-writing": 684,
+        "turn_head": 3962,
+        "IGNORE_turnhead": 3173,
+        "guide": 872,
+        "low_head": 947,
+        "On-stage interaction": 372,
+        "Fighting": 353
+      },
+      "oversampled": 0
+    },
+    "val": {
+      "split": "val",
+      "images": 8351,
+      "boxes": 46309,
+      "instances_per_class": {
+        "站立回答": 4084,
+        "举手发言": 6050,
+        "抬头听讲": 7186,
+        "小组讨论": 5828,
+        "阅读看书": 13129,
+        "书写记笔记": 9434,
+        "玩手机": 253,
+        "趴桌睡觉": 345
+      },
+      "images_per_class": {
+        "举手发言": 1909,
+        "站立回答": 2353,
+        "抬头听讲": 802,
+        "小组讨论": 2779,
+        "阅读看书": 2247,
+        "书写记笔记": 1320,
+        "玩手机": 107,
+        "趴桌睡觉": 101
+      },
+      "unknown_labels": {
+        "blackboard-writing": 195,
+        "turn_head": 1333,
+        "guide": 375,
+        "Eating": 385,
+        "On-stage interaction": 187,
+        "Fighting": 136,
+        "IGNORE_bowhead": 1174,
+        "IGNORE_bend": 217,
+        "IGNORE_raisehead": 1110,
+        "IGNORE_book": 375,
+        "IGNORE_turnhead": 127,
+        "IGNORE_using_phone": 280,
+        "teacher": 160,
+        "IGNORE_sleep": 60,
+        "IGNORE_phone": 287
+      },
+      "oversampled": 0
+    },
+    "test": {
+      "split": "test",
+      "images": 3806,
+      "boxes": 16374,
+      "instances_per_class": {
+        "举手发言": 3195,
+        "小组讨论": 2153,
+        "书写记笔记": 1893,
+        "阅读看书": 4196,
+        "站立回答": 1662,
+        "抬头听讲": 2809,
+        "趴桌睡觉": 281,
+        "玩手机": 185
+      },
+      "images_per_class": {
+        "举手发言": 913,
+        "小组讨论": 1031,
+        "书写记笔记": 425,
+        "阅读看书": 984,
+        "站立回答": 1098,
+        "抬头听讲": 312,
+        "趴桌睡觉": 68,
+        "玩手机": 55
+      },
+      "unknown_labels": {
+        "guide": 185,
+        "IGNORE_sleep": 276,
+        "IGNORE_phone": 595,
+        "IGNORE_raisehead": 585,
+        "IGNORE_using_phone": 462,
+        "IGNORE_bowhead": 1270,
+        "IGNORE_book": 243,
+        "IGNORE_bend": 276,
+        "Fighting": 65,
+        "blackboard-writing": 55,
+        "Eating": 180,
+        "teacher": 3,
+        "turn_head": 44,
+        "IGNORE_turnhead": 61,
+        "On-stage interaction": 19
+      },
+      "oversampled": 0
+    }
+  },
+  "dedup": {
+    "groups": 8132,
+    "dup_images": 48794,
+    "singletons": 1214,
+    "largest_group": 1314
+  },
+  "sources": {
+    "train": {
+      "SCB5-Talk-Teacher-Behavior-2024-9-17": 6061,
+      "student_classroom_behavior": 7936,
+      "scb4065": 3220,
+      "yolov9_classroom": 1808,
+      "SCB5-Stand-2024-9-17": 5344,
+      "SCB5-Talk-2024-9-17": 3120,
+      "SCB5-Handrise-Read-write-2024-9-17": 4579,
+      "5k_HRW_yolo_Dataset_jpg": 3501,
+      "0.671k_university_yolo_Dataset": 671,
+      "SCB5-Discuss-2024-9-17": 520
+    },
+    "val": {
+      "SCB5-Talk-Teacher-Behavior-2024-9-17": 2042,
+      "student_classroom_behavior": 871,
+      "SCB5-Handrise-Read-write-2024-9-17": 1507,
+      "SCB5-Talk-2024-9-17": 1001,
+      "yolov9_classroom": 506,
+      "SCB5-Stand-2024-9-17": 1489,
+      "5k_HRW_yolo_Dataset_jpg": 1014,
+      "scb4065": 470,
+      "SCB5-Discuss-2024-9-17": 230
+    },
+    "test": {
+      "SCB5-Handrise-Read-write-2024-9-17": 778,
+      "SCB5-Talk-Teacher-Behavior-2024-9-17": 817,
+      "SCB5-Talk-2024-9-17": 418,
+      "5k_HRW_yolo_Dataset_jpg": 500,
+      "SCB5-Stand-2024-9-17": 769,
+      "scb4065": 375,
+      "yolov9_classroom": 270,
+      "student_classroom_behavior": 77,
+      "SCB5-Discuss-2024-9-17": 114
+    }
+  },
+  "groups": {
+    "train": 39732,
+    "val": 8709,
+    "test": 384,
+    "valid": 1183
+  }
+}

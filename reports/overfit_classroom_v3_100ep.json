@@ -1,0 +1,21 @@
+{
+  "epochs": 83,
+  "train_box_trend": -0.0257,
+  "val_box_trend": -0.0018,
+  "train_cls_trend": -0.0421,
+  "val_cls_trend": -0.0026,
+  "map50_trend": 0.0077,
+  "map5095_trend": 0.0035,
+  "val_box_min": 1.0413,
+  "val_box_last10_ratio": 1.002,
+  "map5095_best": 0.4839,
+  "map5095_best_epoch": 53,
+  "map5095_last": 0.4812,
+  "map5095_drop_from_best": 0.0027,
+  "map50_best": 0.7355,
+  "map50_last": 0.7354,
+  "verdict": "曲线正常（未见过拟合信号）",
+  "signals": [
+    "train/val 损失同步下降，mAP 已收敛"
+  ]
+}

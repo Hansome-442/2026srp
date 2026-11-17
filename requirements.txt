@@ -1,0 +1,35 @@
+# 课堂行为检测系统依赖清单
+# 本机已验证环境：conda 环境 E:\anaconda3\envs\pytorch（Python 3.11.15 + CUDA 12.8）
+# 安装：E:\anaconda3\envs\pytorch\python.exe -m pip install -r requirements.txt
+
+# ---- 深度学习框架（RTX 50 系显卡必须用 cu128 及以上版本）----
+torch>=2.7.0
+torchvision>=0.22.0
+
+# ---- 目标检测框架 ----
+ultralytics>=8.3.0
+
+# ---- 图像/视频处理 ----
+opencv-python>=4.9.0
+pillow>=10.0.0
+numpy>=1.26.0
+
+# ---- 数据分析与报表 ----
+pandas>=2.0,<3.0
+matplotlib>=3.8.0
+openpyxl>=3.1.0
+
+# ---- 配置与进度 ----
+pyyaml>=6.0
+tqdm>=4.66.0
+
+# ---- 可视化界面 ----
+PyQt5>=5.15.0        # 桌面端 app/desktop_app.py
+streamlit>=1.40.0    # 网页端 app/web_app.py
+
+# -----------------------------------------------------------------------------
+# 如果 torch 需要重装（例如换电脑 / 换 CUDA 版本）：
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+# 国内加速：
+#   pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+# -----------------------------------------------------------------------------

@@ -1,0 +1,69 @@
+# =============================================================================
+#  YOLOv11 训练配置（面向 RTX 5070 Laptop 8GB 显存）
+#  scripts/train.py 读取本文件，命令行参数优先级更高
+#  显存参考（社区实测）：yolo11n@640 batch=16 ≈ 6~8GB；yolo11s@640 batch=8 ≈ 8~10GB
+#  因此 8GB 显卡推荐：yolo11s + batch 8（OOM 就降到 4），或 yolo11n + batch 16
+# =============================================================================
+
+data: data/dataset.yaml        # 由 scripts/prepare_dataset.py 生成
+
+# 模型：yolo11n / yolo11s / yolo11m / yolo11l / yolo11x
+# 数据量少或想快速跑通流程时用 yolo11n；正式训练用 yolo11s；8GB 显存不建议 m/l/x
+model: yolo11s.pt
+# 不想联网下载权重时，可改用课程自带权重：
+# model: E:/yolov11/weights/yolo11s.pt
+
+epochs: 150
+imgsz: 640
+batch: 8                       # 显存不足降到 4 或 2；写成 -1 让 ultralytics 自动估 batch
+device: 0                      # 0 = 第一块 GPU，cpu = 纯 CPU
+workers: 2                     # Windows 下建议 0~2；报 DataLoader 相关错误时改 0
+patience: 30                   # 相似行为收敛慢，早停不要设得太激进（<15 不合适）
+optimizer: auto                # 自动选择（通常 SGD / AdamW）
+lr0: 0.01
+lrf: 0.01
+cos_lr: true
+warmup_epochs: 3.0
+weight_decay: 0.0005
+dropout: 0.0
+
+# 数据增强：课堂场景光照差异大、遮挡严重，mosaic/mixup/HSV 帮助明显
+mosaic: 1.0
+close_mosaic: 20               # 最后 20 轮关闭 mosaic，稳定收敛
+mixup: 0.1
+copy_paste: 0.0                # 无分割标签时不可用
+degrees: 5.0                   # 摄像头安装角度有差异时给一点旋转
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5                    # 注意：若模型需要区分「左手/右手举手」等方向信息，请降到 0.2~0.0
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+erasing: 0.4
+
+# 训练过程
+amp: true                      # 混合精度，省 30%~40% 显存，保持开启
+cache: false                   # 内存 >= 32GB 可改 'ram' 加速
+rect: false
+val: true
+plots: true
+save_period: -1
+seed: 0
+deterministic: false
+
+# 输出位置
+project: runs/train
+name: classroom_yolo11s
+
+# -----------------------------------------------------------------------------
+# 类别不均衡处理（重点：举手发言 / 玩手机 / 趴桌睡觉 样本通常最少）
+#   1) 先跑 baseline，只看「每类 AP + 混淆矩阵」，不要只看总 mAP；
+#      阅读↔书写、举手↔手扶额头 是最容易混淆的两对；
+#   2) 稀有类每类实例数尽量 >= 300，且各学段都要有（大学课堂几乎没有举手，
+#      小学几乎不出现玩手机，混训会互相拖累，可按学段分模型或加权采样）；
+#   3) 用 scripts/prepare_dataset.py --oversample-min 300 对稀有类图片做训练集过采样；
+#   4) 进阶：Slide Loss / Focal Loss、copy-paste 合成稀有类（需分割标签）。
+# -----------------------------------------------------------------------------

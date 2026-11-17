@@ -1,0 +1,52 @@
+[
+  {
+    "dir": "data/raw/downloads/student_classroom_behavior",
+    "names": "writing,reading,listening,turn_head,hand_raising,standing,discuss,teacher",
+    "note": "STBD-08 主数据（8884 图，国内中小学，8 类）"
+  },
+  {
+    "dir": "data/raw/downloads/yolov9_classroom",
+    "names": "Eating,Fighting,Sleeping,Talking,UOP",
+    "note": "Roboflow 海外教室（2584 图，提供 Sleeping/UOP 两类）"
+  },
+  {
+    "dir": "data/raw/downloads/scb3_phone_sleep/5k_HRW_yolo_Dataset_jpg/5k_HRW_yolo_Dataset_jpg",
+    "names": "hand-raising,read,write,using_phone,low_head,sleeping",
+    "note": "SCB-Dataset3 举手集（5015 图）"
+  },
+  {
+    "dir": "data/raw/downloads/scb3_phone_sleep/0.671k_university_yolo_Dataset/0.671k_university_yolo_Dataset",
+    "names": "hand-raising,read,write,using_phone,low_head,sleeping",
+    "note": "SCB-Dataset3 高校子集（671 图，唯一同时含玩手机/趴桌的中文高校数据）"
+  },
+  {
+    "dir": "data/raw/downloads/hf_scb/extracted/SCB5-Discuss-2024-9-17",
+    "names": "discuss",
+    "note": "SCB5 讨论类（864 图 / 5392 框，中文课堂，已看图确认 id0=discuss）"
+  },
+  {
+    "dir": "data/raw/downloads/hf_scb/extracted/SCB5-Handrise-Read-write-2024-9-17",
+    "names": "hand_raising,reading,writing",
+    "note": "SCB5 举手/阅读/书写（6864 图 / 47372 框，中文课堂，已看图确认 id0=举手 id1=阅读 id2=书写）"
+  },
+  {
+    "dir": "data/raw/downloads/scb05/SCB-Dataset/SCB5-Talk-2024-9-17",
+    "names": "talk",
+    "note": "【v4 新增】SCB5 谈话类（4539 图）→ 小组讨论，专治最弱类"
+  },
+  {
+    "dir": "data/raw/downloads/scb05/SCB-Dataset/SCB5-Talk-Teacher-Behavior-2024-9-17",
+    "names": "talk,guide,answer,On-stage interaction,blackboard-writing",
+    "note": "【v4 新增】SCB5 谈话+教师行为（8920 图），只取 talk 类"
+  },
+  {
+    "dir": "data/raw/downloads/scb05/SCB-Dataset/SCB5-Stand-2024-9-17",
+    "names": "stand",
+    "note": "【v4 新增】SCB5 站立类（7602 图）→ 站立回答"
+  },
+  {
+    "dir": "data/raw/downloads/scb4065",
+    "names": "IGNORE_using_phone,IGNORE_bend,IGNORE_book,IGNORE_bowhead,hand-raising,IGNORE_phone,IGNORE_raisehead,reading,IGNORE_sleep,IGNORE_turnhead,upright,writing",
+    "note": "【v6 新增】用户新放的 4065 张 12 类大学阶梯教室数据。经逐类框粒度核查：只有 hand-raising(0.13×0.30)、reading(0.10×0.16)、writing(0.18×0.31)、upright(0.07×0.12) 是「人体级」框，可用；Using_phone(0.027)、phone、book 是物体级，bow_head/raise_head/sleep 是头部级，粒度不一致会污染标签，故用 IGNORE_ 前缀屏蔽"
+  }
+]

@@ -1,0 +1,69 @@
+# =============================================================================
+#  YOLOv11 训练配置 v3（依据 ultralytics 官方配方 + 源码核实结果调优）
+#
+#  关键依据（已核对 ultralytics 8.4.178 源码 / 官方文档）：
+#   · fitness = mAP50-95，best.pt 与早停只看它，不看 mAP50
+#   · optimizer=SGD + lr0=0.01 等价于 auto 在 >1e4 迭代时的选择，显式写死更可控
+#   · cls_pw 为本版原生支持的类别加权，按 (1/count)^p 归一化到均值 1 乘到 BCE 分类损失
+#     —— 比手动调 cls gain 稳，且不会整体抬高误检
+#   · mosaic 0.8 + close_mosaic 15 是官方推荐区间；multi_scale 0.25 近乎免费
+# =============================================================================
+
+data: data/dataset.yaml
+
+model: yolo11s.pt
+# 断网时用课程自带权重：E:/yolov11/weights/yolo11s.pt
+
+epochs: 100
+imgsz: 640
+batch: 12                  # 实测 batch 8 占 4.2GB，12 约 6GB，8GB 卡安全
+device: 0
+workers: 4
+patience: 30
+optimizer: SGD
+lr0: 0.01
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cos_lr: true
+dropout: 0.0
+
+# 损失权重
+box: 7.5
+cls: 0.5
+dfl: 1.5
+cls_pw: 0.35               # 类别加权，专治「趴桌/玩手机/讨论」样本少
+
+# 数据增强（官方推荐 + 课堂场景经验）
+mosaic: 0.8
+close_mosaic: 15
+mixup: 0.05
+copy_paste: 0.0
+degrees: 5.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+erasing: 0.4
+multi_scale: 0.25
+
+# 训练过程
+amp: true
+cache: false
+rect: false
+val: true
+plots: true
+save_period: -1
+seed: 0
+deterministic: false
+
+project: runs/train
+name: classroom_v3_100ep

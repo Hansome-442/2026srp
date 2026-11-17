@@ -1,0 +1,21 @@
+{
+  "epochs": 50,
+  "train_box_trend": -0.0903,
+  "val_box_trend": -0.0022,
+  "train_cls_trend": -0.1319,
+  "val_cls_trend": -0.0046,
+  "map50_trend": 0.0315,
+  "map5095_trend": 0.0263,
+  "val_box_min": 1.0116,
+  "val_box_last10_ratio": 1.004,
+  "map5095_best": 0.4076,
+  "map5095_best_epoch": 43,
+  "map5095_last": 0.4022,
+  "map5095_drop_from_best": 0.0054,
+  "map50_best": 0.634,
+  "map50_last": 0.6273,
+  "verdict": "欠拟合（可继续训）",
+  "signals": [
+    "最后阶段 mAP50-95 仍在上升（+2.6%），说明还没训够"
+  ]
+}

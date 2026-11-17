@@ -1,0 +1,62 @@
+# =============================================================================
+#  YOLOv11 继续训练配置 v7：v6 诊断"欠拟合（mAP 仍在涨）"，暖启动再训一轮
+#  · 起点：runs/best.pt（v6，mAP50 0.5686 / mAP50-95 0.3775）
+#  · 数据不变（46,760 张，含新增 4,065 张大学阶梯教室数据）
+#  · 35 轮，lr0 0.006（比上一轮更低，做精细收敛），cos_lr
+#  · 跑完由 run_full_pipeline.ps1 自动评估、与基线 0.3775 比较（差则回滚）、关机
+# =============================================================================
+
+data: data/dataset.yaml
+
+model: runs/best.pt
+
+epochs: 35
+imgsz: 640
+batch: 12
+device: 0
+workers: 4
+patience: 12
+optimizer: SGD
+lr0: 0.006
+lrf: 0.01
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 1.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.05
+cos_lr: true
+dropout: 0.0
+
+box: 7.5
+cls: 0.5
+dfl: 1.5
+cls_pw: 0.35
+
+mosaic: 0.8
+close_mosaic: 10
+mixup: 0.05
+copy_paste: 0.0
+degrees: 5.0
+translate: 0.1
+scale: 0.5
+shear: 0.0
+perspective: 0.0
+flipud: 0.0
+fliplr: 0.5
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+erasing: 0.4
+multi_scale: 0.25
+
+amp: true
+cache: false
+rect: false
+val: true
+plots: true
+save_period: -1
+seed: 0
+deterministic: false
+
+project: runs/train
+name: classroom_v7_35ep

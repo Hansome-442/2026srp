@@ -1,0 +1,153 @@
+# =============================================================================
+#  课堂行为检测 —— 类别定义（8 类）
+#  前 7 类来自已提供的标注数据集（VOC 格式），第 8 类「玩手机」由项目组自采自标
+#  修改本文件后，必须重新运行 scripts/prepare_dataset.py 重新生成 data/dataset.yaml
+# =============================================================================
+
+dataset:
+  name: classroom-behavior-8
+  version: "1.0"
+  target_samples: 5000          # 预期成果：样本量 >= 5000 张
+  scenes:                       # 多场景要求
+    - 教室后排全景（固定摄像头）
+    - 教室前侧（逆光/侧光）
+    - 小组讨论区
+    - 讲台近景
+  stages:                       # 多学段要求
+    - 小学
+    - 初中
+    - 高中
+    - 大学
+
+# 类别 id 必须从 0 连续编号；en 用于 data.yaml / 标签，zh 用于界面显示
+classes:
+  - id: 0
+    en: listening
+    zh: 抬头听讲
+    kind: normal
+    color: [0, 200, 0]
+    desc: 面向前方、抬头注视黑板或教师，身体基本直立
+  - id: 1
+    en: reading
+    zh: 阅读看书
+    kind: normal
+    color: [0, 160, 255]
+    desc: 低头看书/看资料，视线落在桌面书本上
+  - id: 2
+    en: writing
+    zh: 书写记笔记
+    kind: normal
+    color: [255, 170, 0]
+    desc: 手握笔在纸面书写、记笔记
+  - id: 3
+    en: hand_raising
+    zh: 举手发言
+    kind: positive
+    color: [255, 0, 255]
+    desc: 单臂或双臂上举，示意发言（重点关注，样本通常偏少）
+  - id: 4
+    en: standing
+    zh: 站立回答
+    kind: positive
+    color: [0, 255, 255]
+    desc: 起立站立回答问题或在教室内走动回答问题
+  - id: 5
+    en: discussing
+    zh: 小组讨论
+    kind: normal
+    color: [128, 255, 0]
+    desc: 与同桌/小组成员转头交流、讨论
+  - id: 6
+    en: sleeping
+    zh: 趴桌睡觉
+    kind: anomaly
+    color: [255, 0, 0]
+    desc: 头伏在桌面上、身体长时间不动
+  - id: 7
+    en: using_phone
+    zh: 玩手机
+    kind: anomaly
+    color: [0, 0, 255]
+    desc: 【自采新增类】低头双手持手机、屏幕光明显，或课堂使用手机
+
+# 标注文件里可能出现的其它写法 -> 统一到上面的中文类别名
+# 说明：下面英文别名来自 Kaggle 公开课堂行为数据集（SCB 系列 / Dataset of student
+# classroom behavior），转换时按归一化文本匹配（去空格、去下划线、转小写）。
+# 无法映射的类别（bow-head 低头、turn-head 转头、teacher 教师、guide 教师指导、
+# board-writing 板书、screen 屏幕、blackboard 黑板等）会被自动跳过，并在
+# reports/dataset_stats.md 的「未识别标签」中列出。
+aliases:
+  听讲: 抬头听讲
+  听课: 抬头听讲
+  认真听讲: 抬头听讲
+  抬头: 抬头听讲
+  focus: 抬头听讲
+  upright: 抬头听讲          # 数据集 4065 的 upright（坐正）
+  listening: 抬头听讲
+  pay attention: 抬头听讲
+  paying attention: 抬头听讲
+  看书: 阅读看书
+  阅读: 阅读看书
+  低头看书: 阅读看书
+  read: 阅读看书
+  reading: 阅读看书
+  写字: 书写记笔记
+  书写: 书写记笔记
+  记笔记: 书写记笔记
+  write: 书写记笔记
+  writing: 书写记笔记
+  take notes: 书写记笔记
+  note-taking: 书写记笔记
+  举手: 举手发言
+  举手回答问题: 举手发言
+  hand-raising: 举手发言
+  hand raising: 举手发言
+  raise hand: 举手发言
+  raising hand: 举手发言
+  站立: 站立回答
+  起立: 站立回答
+  站起来: 站立回答
+  standing: 站立回答
+  stand: 站立回答
+  answer: 站立回答
+  answering: 站立回答
+  讨论: 小组讨论
+  交流: 小组讨论
+  discuss: 小组讨论
+  discussing: 小组讨论
+  talk: 小组讨论
+  talking: 小组讨论
+  speaking: 小组讨论
+  group interaction: 小组讨论
+  睡觉: 趴桌睡觉
+  趴桌: 趴桌睡觉
+  趴桌子: 趴桌睡觉
+  sleeping: 趴桌睡觉
+  sleep: 趴桌睡觉
+  leaning on the desk: 趴桌睡觉
+  leaning over the table: 趴桌睡觉
+  手机: 玩手机
+  使用手机: 玩手机
+  玩手机: 玩手机
+  phone: 玩手机
+  using the phone: 玩手机
+  using phone: 玩手机
+  uop: 玩手机
+  usingphone: 玩手机
+  smartphone: 玩手机
+  交谈: 小组讨论
+
+# 异常预警规则（系统运行时使用；min_seconds = 持续时间阈值，秒）
+anomaly_rules:
+  - class: 趴桌睡觉
+    min_seconds: 8
+    level: 高
+    message: 学生持续趴桌，疑似睡觉
+  - class: 玩手机
+    min_seconds: 5
+    level: 高
+    message: 学生课堂使用手机
+  - class: 小组讨论
+    min_seconds: 120
+    level: 中
+    message: 讨论时间过长，注意课堂节奏
