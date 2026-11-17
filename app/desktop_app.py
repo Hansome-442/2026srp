@@ -285,7 +285,7 @@ class MainWindow(QMainWindow):
 
         box_param = QGroupBox("参数")
         param = QVBoxLayout(box_param)
-        self.chk_boxes = QCheckBox("显示识别框（取消勾选 = 看原始画面）")
+        self.chk_boxes = QCheckBox("显示识别框（取消 = 看原图）")
         self.chk_boxes.setChecked(True)
         param.addWidget(self.chk_boxes)
 
@@ -318,7 +318,7 @@ class MainWindow(QMainWindow):
         middle = QVBoxLayout()
         self.lbl_video = QLabel("请选择 图片 / 视频 / 摄像头 开始检测")
         self.lbl_video.setAlignment(Qt.AlignCenter)
-        self.lbl_video.setMinimumSize(880, 620)
+        self.lbl_video.setMinimumSize(700, 520)
         self.lbl_video.setStyleSheet("background:#000;color:#888;border:1px solid #333;font-size:16px")
         self.lbl_video.setScaledContents(False)   # 居中显示，不平铺拉伸
         middle.addWidget(self.lbl_video, 1)
@@ -380,7 +380,17 @@ class MainWindow(QMainWindow):
         splitter.addWidget(w_left)
         splitter.addWidget(w_mid)
         splitter.addWidget(w_right)
-        splitter.setSizes([260, 880, 360])
+        # 左右两栏固定宽度：里面的文字（状态数字、KPI、预警条目）每帧都在变，
+        # 一旦让它们参与宽度计算，QSplitter 就会重新分配空间，
+        # 中间的视频区跟着变宽变窄，画面被重新缩放 ——
+        # 这正是「画面忽大忽小、黑边边界来回跳」的根源。
+        # 固定之后，只有用户拖动窗口才会改变视频区大小。
+        w_left.setFixedWidth(345)
+        w_right.setFixedWidth(360)
+        splitter.setStretchFactor(0, 0)
+        splitter.setStretchFactor(1, 1)
+        splitter.setStretchFactor(2, 0)
+        splitter.setSizes([345, 775, 360])
         root.addWidget(splitter)
 
         # ---------------- 信号 ---------------- #
@@ -743,7 +753,7 @@ class MainWindow(QMainWindow):
         if len(detections) == 0:
             # 0 目标时给出可操作提示：这是「课堂行为」模型，非教室画面（自拍/室内近景）
             # 不会有合理输出，实测最高置信度只有 0.05 左右。
-            hint = "（未检出：本模型只识别课堂场景，请用教室图片/视频，或把置信度调到 0.15 以下试）"
+            hint = "（未检出：本模型只识别课堂场景）"
         self.lbl_status.setText(
             f"模型：{Path(self.weights).name}｜跟踪：{'开' if self.use_track else '关'}"
             f"｜推理尺寸：{self.detector.imgsz}｜播放：{1000.0/max(self._frame_interval_ms,1):.0f}fps｜推理FPS：{fps:.1f}｜本帧目标：{len(detections)}{hint}"
