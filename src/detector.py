@@ -101,7 +101,7 @@ class BehaviorDetector:
 
         path = Path(str(weights)).expanduser()
         self.weights = str(path if path.is_absolute() else (PROJECT_ROOT / path))
-        self.device = device
+        self.device = _resolve_device(device)
         self.imgsz = int(imgsz)
         self.conf = float(conf)
         self.iou = float(iou)
@@ -296,6 +296,33 @@ def _text_color_for(color: Tuple[int, int, int]) -> Tuple[int, int, int]:
     b, g, r = (float(v) for v in tuple(color)[:3])
     luminance = 0.114 * b + 0.587 * g + 0.299 * r
     return (0, 0, 0) if luminance >= 150 else (255, 255, 255)
+
+
+def _resolve_device(device: Any) -> Any:
+    """没有可用 GPU 时自动退回 CPU。
+
+    为什么需要：ultralytics 收到 device='0' 会直接抛
+    `Invalid CUDA 'device=0' requested but no CUDA devices available`，
+    没有显卡的组员连界面都打不开。这里静默降级，只打印一行提示。
+    """
+    if device is None:
+        return None
+    text = str(device).strip().lower()
+    if text in ("", "cpu"):
+        return device
+    try:
+        import torch
+
+        if not torch.cuda.is_available():
+            print(
+                "[提示] 未检测到可用的 CUDA 设备，已自动改用 CPU 推理。\n"
+                "       CPU 下：单张图片检测约 0.5~1 秒/张，可用；\n"
+                "       视频和摄像头会明显变慢（约 1~3 FPS），建议只用来演示界面。"
+            )
+            return "cpu"
+    except Exception:
+        return "cpu"
+    return device
 
 
 _FONT_CACHE: Dict[int, Any] = {}
