@@ -358,6 +358,10 @@ class MainWindow(QMainWindow):
         bc.addWidget(self.table)
         self.lbl_kpi = QLabel("人数：0    抬头率：0.0%")
         self.lbl_kpi.setStyleSheet("font-size:15px;font-weight:bold;color:#1a7f37")
+        # 和状态栏同一个问题：这行数字每帧在变（人数/百分比/轨迹数位数改变），
+        # 文字变宽就会把右栏撑开、把中间的显示区挤窄，画面产生几个像素的抖动。
+        self.lbl_kpi.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        self.lbl_kpi.setMinimumWidth(300)
         bc.addWidget(self.lbl_kpi)
         right.addWidget(box_counts)
 
