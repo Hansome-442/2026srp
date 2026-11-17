@@ -69,6 +69,16 @@ def check_python() -> None:
     add(state, f"Python {platform.python_version()}", f"{platform.architecture()[0]} / {sys.executable}")
 
 
+def _has_nvidia_driver() -> bool:
+    """机器上有没有 NVIDIA 驱动 —— 用来区分「没显卡」和「有显卡但 torch 装错了」。"""
+    import shutil
+
+    if shutil.which("nvidia-smi"):
+        return True
+    root = os.environ.get("SystemRoot", r"C:\Windows")
+    return os.path.exists(os.path.join(root, "System32", "nvidia-smi.exe"))
+
+
 def check_gpu() -> bool:
     try:
         import torch
@@ -76,8 +86,14 @@ def check_gpu() -> bool:
         add(FAIL, "GPU", "torch 没装上，无法检查")
         return False
     if not torch.cuda.is_available():
-        add(FAIL, "CUDA 可用", "torch.cuda.is_available() = False（装了 CPU 版 torch，或驱动太旧）")
-        add(WARN, "运行建议", "只能跑 CPU：训练会非常慢，界面检测可以用但帧率低")
+        if _has_nvidia_driver():
+            # 有 N 卡却用不上：这是真问题，必须修
+            add(FAIL, "CUDA 可用", "有 NVIDIA 驱动但 torch 用不上：多半装了 CPU 版 torch，或驱动太旧")
+            add(WARN, "怎么修", "pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128")
+        else:
+            # 机器本身没有 N 卡：CPU 模式，属于正常状态，不算失败
+            add(WARN, "GPU", "本机没有 NVIDIA 显卡 → CPU 模式（正常，不影响改代码/看界面）")
+            add(WARN, "CPU 模式能力", "图片检测可用(约0.2秒/张)；视频/摄像头约6FPS；训练不可用")
         return False
     name = torch.cuda.get_device_name(0)
     cap = torch.cuda.get_device_capability(0)
@@ -190,6 +206,8 @@ def main() -> int:
         return 1
     if warns:
         print("\n警告项不影响代码运行，通常只是数据/权重还没放到位。")
+    if any(item == "GPU" and state == WARN for state, item, _ in results):
+        print("本机没有 NVIDIA 显卡：改代码、开界面、看数据都能做，只是不能训练。")
     print("\n环境就绪。下一步：python scripts/smoke_test.py")
     return 0
 
