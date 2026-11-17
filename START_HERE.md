@@ -30,7 +30,9 @@
 没有 conda 的话先去 <https://docs.conda.io/en/latest/miniconda.html> 下 Windows 64 位安装包。
 装完打开 **Anaconda Prompt**（不是普通 cmd）。
 
-### 1.2 建环境并装依赖（三条命令，顺序别反）
+### 1.2 建环境并装依赖（先看自己有没有 NVIDIA 显卡）
+
+**第 ② 步分两种，其余三步完全一样。**
 
 ```bash
 cd /d D:\2026srp
@@ -39,33 +41,43 @@ cd /d D:\2026srp
 conda create -n classroom python=3.11 -y
 conda activate classroom
 
-# ② 先单独装 GPU 版 torch（必须带这个 index-url，否则装成 CPU 版）
+# ② 装 torch —— 按你的机器二选一
+#   有 NVIDIA 显卡（要训练）：GPU 版，约 2.5 GB
 pip install torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu128
+#   没有 NVIDIA 显卡（只改代码/看界面）：CPU 版，约 200 MB
+#   pip install torch torchvision
 
 # ③ 再装其余依赖
 pip install -r requirements.lock.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
-> **为什么不直接用 `conda env create -f environment.yml`？**
-> 那个文件里不含 GPU 版 torch，而 `ultralytics` 会把 **CPU 版 torch** 当依赖装上，
-> 结果 `torch.cuda.is_available()` 是 `False`，还白下 2.5 GB。
-> 按上面三步走最稳。
+| 你的机器 | 第 ② 步装 | 下载量 | 能做什么 |
+|---|---|---|---|
+| 有 NVIDIA 显卡（8 GB 以上） | cu128 版 | 2.5 GB | 全部，包括训练 |
+| 没有 / 核显 / 显存 < 6 GB | CPU 版 | 200 MB | 改代码、开界面、图片检测；**不能训练** |
 
-### 1.3 确认 torch 是 GPU 版（最关键的一步）
+> **为什么不用 `conda env create -f environment.yml`？**
+> 那个文件不含 GPU 版 torch，`ultralytics` 会装上 CPU 版，导致有显卡也用不上，
+> 还白下 2.5 GB。按上面三步走最稳。
+
+### 1.3 确认装对了
 
 ```bash
 python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 ```
 
-期望看到 `2.7.1+cu128 True` 这样带 `+cuXXX` 且末尾为 `True` 的输出。
-
-- 看到 `False` 或版本号里没有 `+cu` → 装成 CPU 版了，重装：
+| 输出 | 含义 |
+|---|---|
+| `2.7.1+cu128 True` | ✅ 有显卡且装对了 |
+| `2.7.x False`（没有 `+cu`） | ✅ 没显卡，装的是 CPU 版，**正常** |
+| `2.7.1+cu128 False` | ❌ **有显卡却用不上**，重装下面这条 |
 
 ```bash
 pip install torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu128
 ```
 
 - **RTX 50 系（5060/5070/5080/5090）必须 cu128 及以上**，cu121 装不上会报 `no kernel image`
+- 有显卡但一直 `False` → 多半是 NVIDIA 驱动太旧，去官网更新到最新版
 
 ✅ **做完的标志**：`check_env.py` 最后一行打印「环境就绪」
 
