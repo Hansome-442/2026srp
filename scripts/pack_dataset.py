@@ -132,6 +132,13 @@ def pack(src: Path, out: Path, max_bytes: int, name: str) -> int:
         if written % 5000 == 0:
             print(f"     …已打包 {written}/{len(files)} 个文件（{human(used)}/{human(total)}）")
 
+    # 把数据集版本文件也打进去：解压到 data/ 后版本号自动对齐，
+    # 否则新人从全量包解压出来没有版本文件，fingerprint 会重新从 v1 开始算。
+    ver_file = ROOT / "data" / "DATASET_VERSION.txt"
+    if ver_file.exists() and src.name == "processed":
+        zf.write(ver_file, "DATASET_VERSION.txt")
+        print("  已附带 DATASET_VERSION.txt")
+
     zf.close()
     print(f"  ✅ {path.name:<40} {human(path.stat().st_size):>10}")
 
