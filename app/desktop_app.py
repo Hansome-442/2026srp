@@ -45,6 +45,7 @@ from PyQt5.QtWidgets import (  # noqa: E402
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QSizePolicy,
     QSlider,
     QSplitter,
     QTableWidget,
@@ -336,6 +337,12 @@ class MainWindow(QMainWindow):
         ctrl_bar.addWidget(self.lbl_progress)
         middle.addLayout(ctrl_bar)
         self.lbl_status = QLabel("模型：未加载")
+        # 关键：这行状态文字每帧都在变（FPS、目标数、0 目标时还会追加长提示）。
+        # QLabel 默认的最小宽度 = 文字宽度，文字变长就会把中间的显示区撑大，
+        # 导致画面被重新缩放、左右黑边边界来回跳（实测窗口 1340px 时跳 365px）。
+        # 改成 Ignored 后，宽度只由布局决定，与文字长短无关。
+        self.lbl_status.setSizePolicy(QSizePolicy.Ignored, QSizePolicy.Preferred)
+        self.lbl_status.setMinimumWidth(240)
         middle.addWidget(self.lbl_status)
 
         # ---------------- 右侧统计区 ---------------- #
