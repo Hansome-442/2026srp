@@ -75,6 +75,7 @@ dist/
 data/subset/
 
 # ---- 组员交上来的新样本（合并前暂存）----
-data/incoming/
+data/incoming/*
+!data/incoming/README.md
 data/_merge_log.txt
 data/*.zip
