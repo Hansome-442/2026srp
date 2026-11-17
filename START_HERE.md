@@ -25,10 +25,57 @@
 
 ## 第 1 步：装环境（约 20 分钟）
 
-### 1.1 装 Miniconda
+### 1.0 你需要装哪些软件
 
-没有 conda 的话先去 <https://docs.conda.io/en/latest/miniconda.html> 下 Windows 64 位安装包。
-装完打开 **Anaconda Prompt**（不是普通 cmd）。
+| 软件 | 必须吗 | 干什么用 | 大概多大 |
+|---|---|---|---|
+| **Miniconda** | ✅ **必须** | 建一个隔离的 Python 环境，不污染系统 | 安装包 90 MB |
+| Git | ⭕ 可选 | 从 GitHub 拉代码、提交改动 | 60 MB |
+| PyCharm | ⭕ 可选 | 写代码方便；**只想运行程序的话不需要** | 500 MB+ |
+
+**装完之后**：环境本身约 **7.6 GB**（其中 torch 占 5.4 GB），再加上数据集 5.3 GB，**C 盘或 D 盘至少要留 15 GB 空闲**。
+
+### 1.1 装 Miniconda（Windows）
+
+**① 下载**
+
+打开 <https://docs.conda.io/en/latest/miniconda.html>
+
+往下找 **Windows installers**，点 **Miniconda3 Windows 64-bit**（文件名类似 `Miniconda3-latest-Windows-x86_64.exe`）。
+
+> 网页进不去的话，用清华镜像：<https://mirrors.tuna.tsinghua.edu.cn/anaconda/miniconda/>
+> 找 `Miniconda3-latest-Windows-x86_64.exe`
+
+**② 双击安装，一路 Next，只有两处要改**
+
+| 安装页面 | 选什么 |
+|---|---|
+| Install for | **Just Me (recommended)** ← 不要选 All Users，否则要管理员权限 |
+| Advanced Options | **不要勾** "Add Miniconda3 to my PATH environment variable" |
+| | **勾上** "Register Miniconda3 as my default Python 3.x" |
+
+其他保持默认，点 Install，等 2~3 分钟。
+
+**③ 打开命令窗口（这一步最容易搞错）**
+
+装完后按 **Win 键 → 输入 `Anaconda`** → 点 **`Anaconda Prompt (miniconda3)`**。
+
+打开后是一个黑窗口，**后面所有命令都在这个窗口里敲**。
+
+> ⚠️ 不是普通 `cmd`，也不是 `PowerShell`，更不是 PyCharm 里的终端。
+> 在普通窗口里敲 `conda` 会提示「不是内部或外部命令」，不是没装好，是窗口选错了。
+
+**④ 验证**
+
+在黑窗口里敲：
+
+```bash
+conda --version
+```
+
+显示 `conda 24.x.x` 之类的版本号，就说明装好了。
+
+> **已经装过 Anaconda 的人**：不用再装 Miniconda，直接打开 `Anaconda Prompt` 就行，后面命令完全一样。
 
 ### 1.2 建环境并装依赖（先看自己有没有 NVIDIA 显卡）
 
