@@ -159,6 +159,78 @@ def pack(src: Path, out: Path, max_bytes: int, name: str) -> int:
     return 0
 
 
+MERGE_LOG = ROOT / "data" / "_merge_log.txt"
+
+
+def pack_increment(out: Path) -> int:
+    """只打包 data/_merge_log.txt 里记录的新增文件（merge_new_data.py 写入）。"""
+    if not MERGE_LOG.exists():
+        print("[提示] 没有待打包的新增文件。")
+        print("       先合并新数据：python scripts/merge_new_data.py --src <目录>")
+        return 1
+
+    rels = [l.strip() for l in MERGE_LOG.read_text(encoding="utf-8").splitlines() if l.strip()]
+    if not rels:
+        print("[提示] _merge_log.txt 是空的，没有新增文件需要打包。")
+        return 1
+
+    data_dir = ROOT / "data"
+    entries, missing = [], []
+    for rel in rels:
+        p = data_dir / rel
+        (entries if p.is_file() else missing).append(p if p.is_file() else rel)
+    if missing:
+        print(f"[警告] {len(missing)} 个文件已不存在（可能被删了），跳过：")
+        for m in missing[:5]:
+            print("   ", m)
+
+    if not entries:
+        print("[错误] 记录的文件都不存在了")
+        return 1
+
+    total = sum(p.stat().st_size for p in entries)
+    ver_file = data_dir / "DATASET_VERSION.txt"
+    ver = "?"
+    if ver_file.exists():
+        for line in ver_file.read_text(encoding="utf-8").splitlines():
+            if line.startswith("version"):
+                ver = line.split(":", 1)[1].strip()
+
+    out.mkdir(parents=True, exist_ok=True)
+    zp = out / f"2026srp_dataset_update_{ver}.zip"
+    if zp.exists():
+        zp.unlink()
+
+    print(f"增量打包：{len(entries)} 个文件，合计 {human(total)}")
+    with zipfile.ZipFile(zp, "w", zipfile.ZIP_STORED) as z:
+        for p in entries:
+            z.write(p, p.relative_to(data_dir).as_posix())
+        # 把新的版本文件一起带上，解压后版本号自动对齐
+        if ver_file.exists():
+            z.write(ver_file, ver_file.relative_to(data_dir).as_posix())
+        note = (
+            f"数据集增量包 {ver}\n"
+            "=========================\n\n"
+            "【装法】\n"
+            "  解压到项目根的 data 目录，例如：\n"
+            "     D:\\2026srp\\data\\\n"
+            "  会覆盖同名文件，不会动到没变的部分。\n\n"
+            "【必须按顺序】\n"
+            "  增量包只能依次应用：v1→v2→v3，不能跳过中间版本。\n"
+            "  不确定自己是什么版本：\n"
+            "     python scripts/dataset_fingerprint.py --check\n\n"
+            "【懒人办法】\n"
+            "  直接下最新的全量包，一次到位。\n"
+        )
+        z.writestr("增量说明.txt", note.encode("utf-8"))
+
+    print(f"  ✅ {zp.name}  {human(zp.stat().st_size)}")
+    MERGE_LOG.write_text("", encoding="utf-8")
+    print("  已清空 _merge_log.txt（下次合并会重新记录）")
+    print("\n下一步：把增量包传网盘，群里说明「只下这个，解压到 data 目录」。")
+    return 0
+
+
 def verify(folder: Path) -> int:
     sums_file = folder / "MD5SUMS.txt"
     if not sums_file.exists():
@@ -195,10 +267,14 @@ def main() -> int:
     ap.add_argument("--max-mb", type=int, default=2000, help="每个分卷上限 MB")
     ap.add_argument("--name", default="2026srp_dataset_" + time.strftime("%Y%m%d"))
     ap.add_argument("--verify", metavar="DIR", default=None, help="校验已有的分卷目录")
+    ap.add_argument("--only-new", action="store_true", help="只打包 merge_new_data.py 记录的新增文件")
     args = ap.parse_args()
 
     if args.verify:
         return verify(Path(args.verify))
+
+    if args.only_new:
+        return pack_increment(Path(args.out) if args.out else ROOT / 'dist' / 'dataset')
 
     src = Path(args.src)
     if not src.is_absolute():

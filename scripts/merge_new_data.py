@@ -111,15 +111,26 @@ def main() -> int:
         print("\n--dry-run：没有实际拷贝")
         return 0
 
+    log_lines = []
     for p, lbl in ok:
         shutil.copy2(p, dst_img / p.name)
         shutil.copy2(lbl, dst_lbl / lbl.name)
+        # 记录到合并日志：pack_dataset.py --only-new 靠它知道哪些是新文件
+        log_lines.append(f"processed/images/{args.split}/{p.name}")
+        log_lines.append(f"processed/labels/{args.split}/{lbl.name}")
+
+    LOG_FILE = ROOT / "data" / "_merge_log.txt"
+    with LOG_FILE.open("a", encoding="utf-8", newline="\n") as fh:
+        for line in log_lines:
+            fh.write(line + "\n")
+    print(f"已记录 {len(log_lines)} 个新文件到 data/_merge_log.txt（供增量打包用）")
 
     print("\n" + "=" * 60)
     print(f"已合并 {len(ok)} 组到 {dst_img.parent.parent}（split={args.split}）")
     print("\n下一步必须做：")
     print("   python scripts/dataset_fingerprint.py      # 升版本号")
-    print("   python scripts/pack_dataset.py             # 重打包传网盘")
+    print("   python scripts/pack_dataset.py --only-new  # 打增量包（几十 MB）")
+    print("   python scripts/pack_dataset.py             # 或打全量包（5.3 GB）")
     if no_label or skipped:
         print("\n⚠️ 上面被跳过的那几张，记得让组员补标签后再交一次。")
     return 0
