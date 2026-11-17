@@ -67,3 +67,6 @@ desktop.ini
 
 # ---- git bundle 传输包 ----
 *.bundle
+
+# ---- 数据集分卷打包产物 ----
+dist/
