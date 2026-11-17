@@ -73,3 +73,6 @@ dist/
 
 # ---- 最小可用子集（由 make_subset.py 生成，体积大）----
 data/subset/
+
+# ---- 组员交上来的新样本（合并前暂存）----
+data/incoming/
