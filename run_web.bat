@@ -3,11 +3,11 @@ chcp 65001 >nul
 setlocal enabledelayedexpansion
 cd /d "%~dp0"
 
-REM ---- locate python: activated env > classroom env > this machine's env > PATH ----
+REM ---- locate python: activated env > conda env named classroom/pytorch > PATH ----
 set "PY="
 if defined CONDA_PREFIX if exist "%CONDA_PREFIX%\python.exe" set "PY=%CONDA_PREFIX%\python.exe"
 
-if not defined PY for %%D in (
+if not defined PY for %%R in (
     "%USERPROFILE%\miniconda3"
     "%USERPROFILE%\anaconda3"
     "C:\ProgramData\miniconda3"
@@ -15,10 +15,10 @@ if not defined PY for %%D in (
     "E:\anaconda3"
     "D:\anaconda3"
 ) do (
-    if not defined PY if exist "%%~D\envs\classroom\python.exe" set "PY=%%~D\envs\classroom\python.exe"
+    for %%E in (classroom pytorch) do (
+        if not defined PY if exist "%%~R\envs\%%E\python.exe" set "PY=%%~R\envs\%%E\python.exe"
+    )
 )
-
-if not defined PY if exist "E:\anaconda3\envs\pytorch\python.exe" set "PY=E:\anaconda3\envs\pytorch\python.exe"
 
 if not defined PY where python >nul 2>nul && set "PY=python"
 

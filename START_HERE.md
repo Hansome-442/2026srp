@@ -302,3 +302,21 @@ git commit -m "feat: 说明你改了什么、为什么"
 | 训练 loss 是 nan | 标签异常或学习率 | 加 `--no-amp`，检查标签是否越界 |
 
 还解决不了，把这三样发群里：**完整报错**、`python scripts/check_env.py` 的输出、你执行的命令。
+
+---
+
+## 附：哪些脚本不用管
+
+`scripts/` 里有几个是**作者自己用的工具**，成员不需要运行（里面带了作者机器上的路径，
+在你的电脑上跑会报找不到文件，这是正常的）：
+
+| 脚本 | 用途 |
+|---|---|
+| `make_package.ps1` | 打交接包 |
+| `run_full_pipeline.ps1`、`watch_after_train.ps1` | 作者机器上的自动化训练流水线 |
+| `make_test_video.py`、`pick_test_images.py` | 生成演示视频/挑测试图 |
+| `session_digest.py` | 导出会话记录（跟本项目无关） |
+| `push_github.bat` | 作者一键推送（成员用 `git push` 即可） |
+
+**你要用的只有这几个**：`check_env.py`、`smoke_test.py`、`train.py`、`val.py`、
+`prepare_dataset.py`、`export.py`、`pack_dataset.py`、`make_subset.py`。

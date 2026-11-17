@@ -10,7 +10,7 @@
 
 > **新成员请先看 [`docs/10_项目交接与上手指南.md`](docs/10_项目交接与上手指南.md)**：
 > 环境安装、数据放置、第一次训练、下一步分工、排错表都在里面。
-> 下文命令里的 `E:\anaconda3\envs\pytorch\python.exe` 是原作者机器的路径，换成你自己的 python 即可。
+> 下文命令里的 `python` 是原作者机器的路径，换成你自己的 python 即可。
 
 ---
 
@@ -54,34 +54,34 @@
 ## 二、5 分钟跑通（本机已验证）
 
 ```powershell
-cd E:\2026srp
-$PY = "E:\anaconda3\envs\pytorch\python.exe"     # 已装好 torch 2.7.1+cu128 / ultralytics
+cd <项目目录>
+conda activate classroom          # 环境名见 START_HERE.md
 
 # 1) 用课程自带 VOC 数据先跑通数据流程（只取 person 一类做冒烟验证）
-& $PY scripts\prepare_dataset.py --voc-dir E:\yolov11\VOCdevkit\VOC2007 --max-samples 400
+scripts\prepare_dataset.py --voc-dir <你本地 VOC 数据目录> --max-samples 400
 
 # 2) 冒烟训练（1 轮、320 尺寸，验证环境与流程）
-& $PY scripts\train.py --smoke
+scripts\train.py --smoke
 
 # 3) 验证 + 启动可视化系统
-& $PY scripts\val.py --weights runs\best.pt
-& $PY app\desktop_app.py                         # 桌面端
-& $PY -m streamlit run app\web_app.py            # 网页端
+scripts\val.py --weights runs\best.pt
+app\desktop_app.py                         # 桌面端
+-m streamlit run app\web_app.py            # 网页端
 ```
 
 拿到真正的课堂行为数据后：
 
 ```powershell
 # 1) 数据 -> 标准数据集（自动分层划分、稀有类过采样、生成统计报告）
-& $PY scripts\prepare_dataset.py --voc-dir data\raw\classroom_voc --oversample-min 300
+scripts\prepare_dataset.py --voc-dir data\raw\classroom_voc --oversample-min 300
 
 # 2) 训练（读 configs/train.yaml；命令行可临时覆盖）
-& $PY scripts\train.py
-& $PY scripts\train.py --model yolo11n.pt --epochs 100 --batch 16 --name quick_try
+scripts\train.py
+scripts\train.py --model yolo11n.pt --epochs 100 --batch 16 --name quick_try
 
 # 3) 评估 / 导出 / 部署
-& $PY scripts\val.py --weights runs\train\classroom_yolo11s\weights\best.pt --split test
-& $PY scripts\export.py --weights runs\best.pt --format onnx
+scripts\val.py --weights runs\train\classroom_yolo11s\weights\best.pt --split test
+scripts\export.py --weights runs\best.pt --format onnx
 ```
 
 训练完成后把权重的实际路径填进 `configs/app.yaml` 的 `model.weights`，界面即用新模型。
@@ -152,7 +152,7 @@ $PY = "E:\anaconda3\envs\pytorch\python.exe"     # 已装好 torch 2.7.1+cu128 /
 | --- | --- | --- |
 | 环境自检 | `python -c "import torch,ultralytics"` | torch 2.7.1+cu128，CUDA 可用，ultralytics 8.4.178 |
 | 代码编译 | `python -m compileall app src scripts` | 退出码 0，无语法错误 |
-| 数据转换 | `prepare_dataset.py --voc-dir E:\yolov11\VOCdevkit\VOC2007 --max-samples 1200` | 578 张图 / 1498 个框，train:val:test = 386:125:67，生成 `data/demo_dataset.yaml` |
+| 数据转换 | `prepare_dataset.py --voc-dir <你本地 VOC 数据目录> --max-samples 1200` | 578 张图 / 1498 个框，train:val:test = 386:125:67，生成 `data/demo_dataset.yaml` |
 | 训练 | `train.py --model yolo11n.pt --epochs 5 --imgsz 416 --batch 16` | 5 轮完成；显存占用 1.29GB；mAP50 0.52（仅 5 轮 + 单类冒烟，非正式精度） |
 | 验证 | `val.py --weights runs/best.pt` | 生成 `reports/val_report_val.md` |
 | 系统链路自检 | `smoke_test.py --weights runs/best.pt` | 7 项全 PASS：推理 → 绘制 → 跟踪 → 行为分析 → 预警 → CSV/Markdown/图表导出 |
@@ -166,12 +166,12 @@ $PY = "E:\anaconda3\envs\pytorch\python.exe"     # 已装好 torch 2.7.1+cu128 /
 
 ```powershell
 # 1) 转换 + 划分 + 统计报告（自动识别 VOC / YOLO 两种格式）
-& E:\anaconda3\envs\pytorch\python.exe scripts\prepare_dataset.py --voc-dir data\raw\classroom_voc --oversample-min 300
+scripts\prepare_dataset.py --voc-dir data\raw\classroom_voc --oversample-min 300
 
 # 2) 正式训练（configs\train.yaml：yolo11s / 150 轮 / batch 8 / 640）
-& E:\anaconda3\envs\pytorch\python.exe scripts\train.py
+scripts\train.py
 
 # 3) 评估并接入系统
-& E:\anaconda3\envs\pytorch\python.exe scripts\val.py --weights runs\train\classroom_yolo11s\weights\best.pt --split test
+scripts\val.py --weights runs\train\classroom_yolo11s\weights\best.pt --split test
 # 把该权重路径填进 configs\app.yaml 的 model.weights，双击 run_app.bat 即可演示
 ```
