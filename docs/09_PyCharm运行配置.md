@@ -25,18 +25,55 @@ PyCharm 默认可能用系统 Python 或 conda 的 base 环境，那些**都没�
 
 `File → Settings → Project: 2026srp → Python Interpreter`
 
-| 情况 | 操作 |
-|---|---|
-| 下拉里已有 `Python 3.11 (classroom)` | 直接选中 |
-| 没有 | 点齿轮 → `Add Interpreter` → `Add Local Interpreter` → 左侧选 `Conda Environment` → 选 `Use existing environment` → 在列表里找 `classroom` |
+**情况 A：下拉框里有 `Python 3.11 (classroom)`**
 
-找不到 `classroom` 时，直接指到解释器文件：
+直接选中 → 点 `OK`。跳到第 3 步验证。
+
+**情况 B：下拉框里没有（第一次用这个环境）**
+
+按顺序点：
 
 ```
-<你的 conda 安装目录>\envs\classroom\python.exe
+① 右侧齿轮图标 ⚙  →  Add Interpreter  →  Add Local Interpreter...
+② 弹窗左侧选：Conda Environment
+③ 右侧选：Use existing environment      ← 关键，不要选 Create new
+④ "Interpreter" 下拉框里找 classroom
+   （会显示成  ...\envs\classroom\python.exe）
+⑤ OK → OK → 等索引完成（右下角进度条走完，约 1 分钟）
 ```
 
-常见位置：`C:\Users\<你>\miniconda3\envs\classroom\python.exe`、`D:\anaconda3\envs\classroom\python.exe`
+**情况 C：第 ④ 步下拉框里也找不到 classroom**
+
+说明 PyCharm 没扫描到你的 conda。手动指定：
+
+1. 第 ④ 步点下拉框右边的 **`...`** 浏览按钮
+2. 手动进到你的 conda 目录下的 `envs\classroom\python.exe`
+
+常见位置（按你装 conda 时选的路径找）：
+
+```
+C:\Users\<你的用户名>\miniconda3\envs\classroom\python.exe
+C:\Users\<你的用户名>\anaconda3\envs\classroom\python.exe
+C:\ProgramData\miniconda3\envs\classroom\python.exe
+D:\anaconda3\envs\classroom\python.exe
+E:\anaconda3\envs\classroom\python.exe
+```
+
+**不确定装在哪？** 打开 Anaconda Prompt 敲：
+
+```bash
+conda activate classroom
+where python
+```
+
+输出的第一行就是你要填的路径。
+
+**情况 D：用的是 venv 而不是 conda**
+
+第 ② 步左侧选 `Virtualenv Environment` → `Existing environment` → 指到 `.venv\Scripts\python.exe`。
+
+> **PyCharm 版本差异**：新版把入口叫 `Add Local Interpreter`，
+> 老版叫 `Add`。找不到就在设置页搜 “Interpreter”。
 
 ### 3) 验证解释器对不对（30 秒）
 

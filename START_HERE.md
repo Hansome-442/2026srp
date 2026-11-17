@@ -263,6 +263,10 @@ python app/desktop_app.py
 > **用 PyCharm 的话**：关键是把解释器指到 `classroom` 环境，否则一跑就 `ModuleNotFoundError`。
 > 具体步骤（含运行配置怎么填）见 [`docs/09_PyCharm运行配置.md`](docs/09_PyCharm运行配置.md)。
 > 不想折腾 PyCharm 就双击 `run_app.bat`，它会自动找 python。
+>
+> **报 `FileNotFoundError` 说找不到某个路径** → 看
+> [`docs/14_路径问题排查.md`](docs/14_路径问题排查.md)。
+> 记住一条：**在项目根目录下执行命令，就不会有路径问题**。
 
 ---
 
