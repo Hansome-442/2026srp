@@ -207,6 +207,10 @@ python app/desktop_app.py
 
 `runs/best.pt` 已经在包里，所以界面一打开用的就是训练好的 8 类模型，不是 COCO。
 
+> **用 PyCharm 的话**：关键是把解释器指到 `classroom` 环境，否则一跑就 `ModuleNotFoundError`。
+> 具体步骤（含运行配置怎么填）见 [`docs/09_PyCharm运行配置.md`](docs/09_PyCharm运行配置.md)。
+> 不想折腾 PyCharm 就双击 `run_app.bat`，它会自动找 python。
+
 ---
 
 ## 第 5 步：开始改代码

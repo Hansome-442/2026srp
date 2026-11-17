@@ -1,58 +1,91 @@
-# PyCharm 里运行本项目的配置说明
+# 在 PyCharm 里运行本项目
 
-## 一、能跑的环境（只有一个）
+> 前提：已经按 [`START_HERE.md`](../START_HERE.md) 第 1 步装好了 `classroom` 环境。
+> 本文用 `D:\2026srp` 举例，换成你自己的路径即可。
 
-| 环境 | 解释器路径 | Python | torch | ultralytics | opencv | PyQt5 | 能跑吗 |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| **conda 环境 `pytorch`** | `E:\anaconda3\envs\pytorch\python.exe` | 3.11.15 | ✅ 2.7.1+cu128 | ✅ 8.4.178 | ✅ | ✅ | **✅ 可以** |
-| anaconda base | `E:\anaconda3\python.exe` | 3.11.4 | ❌ | ❌ | ❌ | ✅ | ❌ 缺 torch/ultralytics/opencv |
-| 系统 Python 3.8 | `C:\Users\123\AppData\Local\Programs\Python\Python38\python.exe` | 3.8.10 | ✅ 2.0 CPU | ❌ | ❌ | ❌ | ❌ 缺 ultralytics/opencv/PyQt5 |
-| 系统 Python 3.13 | `...\Python313\python.exe` | 3.13.5 | ❌ | ❌ | ❌ | ❌ | ❌ |
-| conda `py38_202530304481` | `E:\anaconda3\envs\py38_202530304481\python.exe` | 3.8.20 | ❌ | ❌ | ❌ | ❌ | ❌ |
+---
 
-**结论：只能用 conda 的 `pytorch` 环境。**
-PyCharm 里它可能显示成两个名字（都指向同一个 python.exe）：
-- `Python 3.10 (pytorch)` ← 名字标错了，实际是 3.11.15
-- `pytorch`
+## 一、核心原则：一定要选对解释器
 
-## 二、PyCharm 配置步骤
+PyCharm 默认可能用系统 Python 或 conda 的 base 环境，那些**都没装 torch/ultralytics**，一跑就是 `ModuleNotFoundError`。
+
+**必须选 `classroom` 这个 conda 环境的 python.exe。**
+
+---
+
+## 二、四个步骤
 
 ### 1) 打开工程
-`File → Open` → 选 `E:\2026srp`（不要只打开 `app` 子目录）
 
-### 2) 选解释器
+`File → Open` → 选**项目根目录**（例如 `D:\2026srp`，能看到 `app` `src` `scripts` `configs` 的那一层）。
+
+⚠️ 不要只打开 `app` 子目录，否则找不到 `configs/` 和 `runs/`。
+
+### 2) 配置解释器
+
 `File → Settings → Project: 2026srp → Python Interpreter`
-- 下拉里直接选 **`Python 3.10 (pytorch)`** 或 **`pytorch`**；
-- 如果下拉里没有：点 `Add Interpreter → Add Local Interpreter → Conda Environment → Use existing environment`，
-  路径填 `E:\anaconda3\envs\pytorch\python.exe`。
 
-### 3) 建运行配置（桌面端）
+| 情况 | 操作 |
+|---|---|
+| 下拉里已有 `Python 3.11 (classroom)` | 直接选中 |
+| 没有 | 点齿轮 → `Add Interpreter` → `Add Local Interpreter` → 左侧选 `Conda Environment` → 选 `Use existing environment` → 在列表里找 `classroom` |
+
+找不到 `classroom` 时，直接指到解释器文件：
+
+```
+<你的 conda 安装目录>\envs\classroom\python.exe
+```
+
+常见位置：`C:\Users\<你>\miniconda3\envs\classroom\python.exe`、`D:\anaconda3\envs\classroom\python.exe`
+
+### 3) 验证解释器对不对（30 秒）
+
+在 PyCharm 里打开 `scripts/check_env.py`，右键 → `Run 'check_env'`。
+
+✅ 看到「环境就绪」就说明解释器配对了。
+❌ 看到 `ModuleNotFoundError` → 解释器选错了，回第 2 步。
+
+### 4) 建运行配置
+
 `Run → Edit Configurations → + → Python`
+
+**桌面端**
+
 | 字段 | 值 |
-| --- | --- |
-| Script path | `E:\2026srp\app\desktop_app.py` |
+|---|---|
+| Script path | `<项目根>\app\desktop_app.py` |
 | Parameters | 留空（可选 `--weights runs/best.pt`） |
-| **Working directory** | **`E:\2026srp`**（必须，否则找不到 configs/ 和 runs/best.pt） |
-| Python interpreter | `pytorch` |
+| **Working directory** | **`<项目根>`（必填，否则找不到 configs/）** |
+| Python interpreter | `classroom` |
 | Emulate terminal in output console | 建议勾上（中文日志不乱码） |
 
-### 4) 网页端（可选）
-| 字段 | 值 |
-| --- | --- |
-| Module name | `streamlit`（选 "Module name" 而不是 script） |
-| Parameters | `run app/web_app.py --server.headless true` |
-| Working directory | `E:\2026srp` |
+**网页端**：把 `Module name` 设为 `streamlit`，Parameters 填 `run app/web_app.py --server.headless true`。
 
-### 5) 只验证模型能不能用（最快）
-Script path 选 `scripts/smoke_test.py`，Parameters 填 `--weights runs/best.pt --source test_images`，直接 Run。
+**只测模型**：Script path 选 `scripts/smoke_test.py`，Parameters 填 `--weights runs/best.pt --source test_images`。
+
+---
 
 ## 三、常见坑
 
-| 现象 | 原因 / 解决 |
-| --- | --- |
-| `ModuleNotFoundError: ultralytics` | 解释器选错了，选成 base/3.8；改成 `pytorch` |
-| `FileNotFoundError: configs/classes.yaml` | Working directory 不是 `E:\2026srp` |
-| 摄像头打不开 | QQ/微信/会议软件占用摄像头，先关掉 |
-| 界面能开但很卡 | 训练在占 GPU，等训练结束或把 `configs/app.yaml` 的 `device` 改 `cpu` |
-| `Could not load the Qt platform plugin "windows"` | 环境里 PyQt5 冲突，在 Run 配置的环境变量里加 `QT_PLUGIN_PATH=E:\anaconda3\envs\pytorch\Library\plugins` |
-| 中文变方块 | 已内置字体回退（msyh.ttc），若仍异常检查 `C:\Windows\Fonts\msyh.ttc` 是否存在 |
+| 现象 | 原因 | 解决 |
+|---|---|---|
+| `ModuleNotFoundError: ultralytics` | 解释器选成了 base 或系统 Python | 改成 `classroom` |
+| `FileNotFoundError: configs/classes.yaml` | Working directory 不对 | 设成项目根目录 |
+| 摄像头打不开 | 被 QQ/微信/会议软件占用 | 先退出那些程序 |
+| 界面能开但很卡 | 训练正占着 GPU | 等训练结束，或把 `configs/app.yaml` 的 `device` 改成 `cpu` |
+| `Could not load the Qt platform plugin "windows"` | PyQt5 插件路径冲突 | Run 配置的 Environment variables 里加 `QT_PLUGIN_PATH=<你的env>\Library\plugins` |
+| 中文显示成方块 | 缺微软雅黑 | Windows 自带；确认 `C:\Windows\Fonts\msyh.ttc` 存在 |
+| 界面能开但没有任何框 | 画面不是课堂场景（比如对着屏幕拍） | 换成真实教室图片/视频；本模型只识别课堂场景 |
+
+---
+
+## 四、不想折腾 PyCharm 的话
+
+在项目根目录打开 **Anaconda Prompt**：
+
+```bash
+conda activate classroom
+python app\desktop_app.py
+```
+
+或者直接**双击 `run_app.bat`**（脚本会自动找 python）。
