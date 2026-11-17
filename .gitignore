@@ -64,3 +64,6 @@ desktop.ini
 *.mp4
 *.avi
 *.mov
+
+# ---- git bundle 传输包 ----
+*.bundle
