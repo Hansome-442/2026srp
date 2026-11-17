@@ -171,3 +171,63 @@ git push -u origin main
 ```
 
 **别写**「update」「fix bug」「修改」这种——三个月后没人知道改了什么。
+
+---
+
+## 八、数据集怎么同步（三台机器训练必读）
+
+代码走 git 很自然，但**数据集 5.3 GB 不进 git**，所以它最容易出问题：
+你补了 200 张图、他那边还是旧的，两个人各训一版，指标根本没法比。
+
+### 用「版本号 + 指纹」判断是不是同一份数据
+
+```bash
+python scripts/dataset_fingerprint.py          # 扫描并写入 data/DATASET_VERSION.txt
+python scripts/dataset_fingerprint.py --check  # 只比对，不一致返回退出码 1
+```
+
+会得到这样一份记录：
+
+```
+version    : v2
+images     : 46960
+labels     : 46960
+fingerprint: 8f3c2a1d9e
+updated    : 2026-11-25 14:20
+```
+
+**指纹（fingerprint）由每张图的文件名+大小、每个标签的文件名+大小聚合而成**，
+少一张图、改一个标签，指纹就变。扫描 4.6 万张图约 **20 秒**。
+
+### 训练时会自动打印
+
+```
+INFO 数据集版本 v2 ｜ 图片 46960 ｜ 指纹 8f3c2a1d9e ｜ 更新于 2026-11-25 14:20
+INFO （三台机器训练时请核对指纹一致，否则指标不可比）
+```
+
+三个人训练前**对一下这行指纹**，一致才开工。
+
+### 数据变动流程
+
+```
+① 新样本统一放 data/incoming/          （不要直接改 data/processed）
+② 负责人合并 → python scripts/dataset_fingerprint.py
+   → 版本自动从 v2 升到 v3
+③ 重新打包传网盘：python scripts/pack_dataset.py
+④ 群里发一句「数据集升到 v3，指纹 8f3c2a1d9e，请重新下载」
+⑤ 大家删掉旧 data/processed，解压新的
+```
+
+**为什么只让一个人改 data/processed**：三个人各自改，合并时会变成三份互不兼容的数据，
+谁都说不清最终版本是什么。**数据合库是集中动作，代码才是分布式的。**
+
+### 训练报告里必须写版本
+
+```markdown
+数据：v3（指纹 8f3c2a1d9e，46,960 张）
+代码：commit 7a3f2c1
+结果：mAP50 0.58
+```
+
+缺了这两行，别人无法复现你的结果。

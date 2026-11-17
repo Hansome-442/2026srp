@@ -78,6 +78,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         LOG.error("找不到数据集配置 %s，请先运行：python scripts/prepare_dataset.py --voc-dir <你的数据目录>", data)
         return 2
 
+    # ---- 打印数据集版本：三台机器各自训练时，靠它判断数据是不是同一份 ----
+    ver_file = PROJECT_ROOT / "data" / "DATASET_VERSION.txt"
+    if ver_file.exists():
+        info = {}
+        for line in ver_file.read_text(encoding="utf-8").splitlines():
+            if ":" in line:
+                k, v = line.split(":", 1)
+                info[k.strip()] = v.strip()
+        LOG.info(
+            "数据集版本 %s ｜ 图片 %s ｜ 指纹 %s ｜ 更新于 %s",
+            info.get("version", "?"), info.get("images", "?"),
+            info.get("fingerprint", "?"), info.get("updated", "?"),
+        )
+        LOG.info("（三台机器训练时请核对指纹一致，否则指标不可比）")
+    else:
+        LOG.warning("没有 data/DATASET_VERSION.txt，建议先跑：python scripts/dataset_fingerprint.py")
+
     model = resolve_weights(args.model or cfg.get("model", "yolo11s.pt"))
     train_kwargs: Dict[str, Any] = {k: v for k, v in cfg.items() if k not in RESERVED_KEYS}
 

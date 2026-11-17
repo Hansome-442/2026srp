@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "E:\2026srp\scripts\dataset_fingerprint.py", line 151, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "E:\2026srp\scripts\dataset_fingerprint.py", line 105, in main
+    print(f"\u6b63\u5728\u626b\u63cf {src} …\uff084.6 \u4e07\u5f20\u56fe\uff0c\u7ea6 30 \u79d2\uff09")
+  File "E:\anaconda3\envs\pytorch\Lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-3: character maps to <undefined>
