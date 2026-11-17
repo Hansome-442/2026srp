@@ -5,7 +5,7 @@
 用法
 ----
 python scripts/smoke_test.py                                  # 自动挑一张图片自检
-python scripts/smoke_test.py --weights runs/best.pt --source E:/data/test.jpg
+python scripts/smoke_test.py --weights runs/best.pt --source D:/data/test.jpg
 python scripts/smoke_test.py --source data/processed/images/val --limit 5
 """
 

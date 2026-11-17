@@ -33,7 +33,7 @@ data/raw/self_collected/
 ## 转换为训练集
 
 ```powershell
-& E:\anaconda3\envs\pytorch\python.exe scripts\prepare_dataset.py --voc-dir data\raw\classroom_voc --yolo-dir data\raw\self_collected --oversample-min 300
+& python scripts\prepare_dataset.py --voc-dir data\raw\classroom_voc --yolo-dir data\raw\self_collected --oversample-min 300
 ```
 
 类别名请使用 `configs/classes.yaml` 中的中文类别名（抬头听讲 / 阅读看书 / 书写记笔记 /

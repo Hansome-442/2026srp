@@ -1,6 +1,6 @@
 # 课堂行为检测系统依赖清单
-# 本机已验证环境：conda 环境 E:\anaconda3\envs\pytorch（Python 3.11.15 + CUDA 12.8）
-# 安装：E:\anaconda3\envs\pytorch\python.exe -m pip install -r requirements.txt
+# 本机已验证环境：conda 环境 classroom（Python 3.11.15 + torch 2.7.1+cu128）
+# 安装：pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 # ---- 深度学习框架（RTX 50 系显卡必须用 cu128 及以上版本）----
 torch>=2.7.0

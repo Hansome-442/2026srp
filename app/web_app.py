@@ -9,7 +9,7 @@
 运行
 ----
 streamlit run app/web_app.py
-（在 E:\\2026srp 目录下执行；默认浏览器打开 http://localhost:8501）
+（在项目根目录执行；默认浏览器打开 http://localhost:8501）
 """
 
 from __future__ import annotations
