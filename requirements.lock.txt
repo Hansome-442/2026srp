@@ -1,7 +1,12 @@
-# 精确依赖锁（本机 E:\anaconda3\envs\pytorch 实测环境）
-# Python 3.11.15 / torch 2.7.1+cu128 / ultralytics 8.4.178
-# 安装：pip install -r requirements.lock.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
-# 注意：torch 建议先单独装（见 docs/10 第 2 节），否则可能拉到 CPU 版。
+# 精确依赖锁（除 torch 外，全部版本已锁死）
+# 本机实测：Python 3.11.15 / torch 2.7.1+cu128 / ultralytics 8.4.178
+#
+# ！！torch 不在本文件里，必须先单独装（顺序不能反）：
+#   pip install torch==2.7.1 torchvision==0.22.1 \
+#       --index-url https://download.pytorch.org/whl/cu128
+#
+# 再装其余：
+#   pip install -r requirements.lock.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 altair==5.5.0
 anyio==4.15.1
@@ -73,10 +78,7 @@ sympy==1.14.0
 tenacity==9.1.4
 threadpoolctl==3.6.0
 toml==0.10.2
-torch==2.7.1+cu128
-torchaudio==2.7.1+cu128
 torchsummary==1.5.1
-torchvision==0.22.1+cu128
 tornado==6.5.5
 tqdm==4.70.1
 typing_extensions==4.16.0

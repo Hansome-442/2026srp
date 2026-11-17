@@ -30,13 +30,26 @@
 没有 conda 的话先去 <https://docs.conda.io/en/latest/miniconda.html> 下 Windows 64 位安装包。
 装完打开 **Anaconda Prompt**（不是普通 cmd）。
 
-### 1.2 创建环境
+### 1.2 建环境并装依赖（三条命令，顺序别反）
 
 ```bash
 cd /d D:\2026srp
-conda env create -f environment.yml
+
+# ① 建一个干净的 python 3.11 环境
+conda create -n classroom python=3.11 -y
 conda activate classroom
+
+# ② 先单独装 GPU 版 torch（必须带这个 index-url，否则装成 CPU 版）
+pip install torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu128
+
+# ③ 再装其余依赖
+pip install -r requirements.lock.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+
+> **为什么不直接用 `conda env create -f environment.yml`？**
+> 那个文件里不含 GPU 版 torch，而 `ultralytics` 会把 **CPU 版 torch** 当依赖装上，
+> 结果 `torch.cuda.is_available()` 是 `False`，还白下 2.5 GB。
+> 按上面三步走最稳。
 
 ### 1.3 确认 torch 是 GPU 版（最关键的一步）
 
@@ -49,7 +62,7 @@ python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 - 看到 `False` 或版本号里没有 `+cu` → 装成 CPU 版了，重装：
 
 ```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+pip install torch==2.7.1 torchvision==0.22.1 --index-url https://download.pytorch.org/whl/cu128
 ```
 
 - **RTX 50 系（5060/5070/5080/5090）必须 cu128 及以上**，cu121 装不上会报 `no kernel image`
